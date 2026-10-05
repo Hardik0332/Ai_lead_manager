@@ -16,6 +16,7 @@ export default function Home() {
   const [events, setEvents] = useState<string[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [aiMode, setAiMode] = useState<string>("");
+  const [aiModel, setAiModel] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
 
@@ -81,7 +82,10 @@ export default function Home() {
         if (ignore) return;
         setEvents(ev.events);
         setCounts(st.counts);
-        if (health) setAiMode(health.ai_mode);
+        if (health) {
+          setAiMode(health.ai_mode);
+          setAiModel(health.model);
+        }
       })
       .catch(() => {
         /* non-fatal — stats/events refresh on next mutation */
@@ -108,7 +112,10 @@ export default function Home() {
       setEvents(ev.events);
       setCounts(st.counts);
       setListError(null);
-      if (health) setAiMode(health.ai_mode);
+      if (health) {
+        setAiMode(health.ai_mode);
+        setAiModel(health.model);
+      }
     } catch {
       /* list error state, if any, is left as-is; toast already shown */
     }
@@ -202,12 +209,12 @@ export default function Home() {
             <span
               title={
                 aiMode === "llm"
-                  ? "AI features call the configured model (Gemini)"
+                  ? `AI features call the configured model (${aiModel})`
                   : "No API key set — AI features use the built-in offline fallback"
               }
               className="text-xs text-zinc-400"
             >
-              AI: {aiMode === "llm" ? "Gemini" : "offline mode"}
+              AI: {aiMode === "llm" ? aiModel || "connected" : "offline mode"}
             </span>
           )}
         </div>

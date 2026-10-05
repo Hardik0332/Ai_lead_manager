@@ -48,4 +48,4 @@ app.include_router(meta.router)
 
 @app.get("/api/health", response_model=HealthOut, tags=["meta"])
 def health():
-    return HealthOut(status="ok", ai_mode=ai_service.ai_mode())
+    return HealthOut(status="ok", ai_mode=ai_service.ai_mode(), model=ai_service.MODEL)

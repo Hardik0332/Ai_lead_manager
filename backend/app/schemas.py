@@ -60,3 +60,4 @@ class AiFollowupOut(BaseModel):
 class HealthOut(BaseModel):
     status: str
     ai_mode: str  # "llm" | "fallback"
+    model: str  # configured AI model name (not a secret)

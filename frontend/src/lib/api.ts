@@ -46,7 +46,7 @@ export interface AiFollowupResp {
 }
 
 export const api = {
-  health: () => req<{ status: string; ai_mode: string }>("/api/health"),
+  health: () => req<{ status: string; ai_mode: string; model: string }>("/api/health"),
   listLeads: (p: ListParams) => {
     const qs = new URLSearchParams(
       Object.entries(p).filter(([, v]) => v !== undefined && v !== "") as [string, string][],
