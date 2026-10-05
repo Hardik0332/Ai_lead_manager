@@ -40,19 +40,33 @@ class AiResult:
 # LLM mode (any OpenAI-compatible /chat/completions endpoint)
 # --------------------------------------------------------------------------
 
+class AiProviderError(RuntimeError):
+    """Upstream AI provider failure. The message is safe to show to users."""
+
+
 async def _chat(system_prompt: str, user_prompt: str) -> str:
-    payload = {
+    payload: dict = {
         "model": MODEL,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
         "temperature": 0.4,
-        "max_tokens": 400,
+        # Generous cap: Gemini 2.5 spends output budget on internal thinking,
+        # and a tight cap truncates the visible answer to a few tokens.
+        "max_tokens": 2048,
     }
+    # Gemini 2.5 via the OpenAI-compat layer: disable thinking so the whole
+    # output budget goes to the visible answer (and responses stay fast).
+    if "gemini" in MODEL.lower() or "generativelanguage" in BASE_URL:
+        payload["reasoning_effort"] = "none"
     headers = {"Authorization": f"Bearer {API_KEY}"}
     async with httpx.AsyncClient(timeout=TIMEOUT_SECONDS) as client:
         resp = await client.post(f"{BASE_URL}/chat/completions", json=payload, headers=headers)
+        if resp.status_code == 429:
+            raise AiProviderError(
+                "the AI provider's rate limit was hit — wait about a minute and try again"
+            )
         resp.raise_for_status()
         data = resp.json()
     return data["choices"][0]["message"]["content"].strip()

@@ -17,6 +17,8 @@ async def summarize_lead(lead_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Lead not found")
     try:
         result = await ai.summarize_notes(lead.notes)
+    except ai.AiProviderError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:  # network / provider failure
         raise HTTPException(status_code=502, detail=f"AI provider error: {exc}") from exc
 
@@ -36,6 +38,8 @@ async def draft_followup(
     tone = payload.tone if payload else "friendly"
     try:
         result = await ai.draft_followup(lead, tone)
+    except ai.AiProviderError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"AI provider error: {exc}") from exc
 

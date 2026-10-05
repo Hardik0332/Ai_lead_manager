@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(
     title="Even8 Lead Manager API",
     description="Backend for the AI Event Lead Manager assignment.",
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan,
 )
 
