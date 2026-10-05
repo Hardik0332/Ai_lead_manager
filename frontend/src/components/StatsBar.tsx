@@ -14,36 +14,42 @@ export function StatsBar({
   onSelectStatus: (s: LeadStatus | null) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <button
-        onClick={() => onSelectStatus(null)}
-        className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition ${
-          activeStatus === null
-            ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-            : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-        }`}
-      >
-        All leads <span className="ml-1 opacity-70">{total}</span>
-      </button>
-      {STATUS_ORDER.map((s) => {
-        const meta = STATUS_META[s];
-        const active = activeStatus === s;
-        return (
-          <button
-            key={s}
-            onClick={() => onSelectStatus(active ? null : s)}
-            className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition ${
-              active
-                ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-            }`}
-          >
-            <span className={`h-2 w-2 rounded-full ${meta.dot}`} />
-            {meta.label}
-            <span className="font-semibold text-slate-900">{counts[s] ?? 0}</span>
-          </button>
-        );
-      })}
+    <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5">
+      <FilterTab label="All" count={total} active={activeStatus === null} onClick={() => onSelectStatus(null)} />
+      {STATUS_ORDER.map((s) => (
+        <FilterTab
+          key={s}
+          label={STATUS_META[s].label}
+          count={counts[s] ?? 0}
+          active={activeStatus === s}
+          onClick={() => onSelectStatus(activeStatus === s ? null : s)}
+        />
+      ))}
     </div>
+  );
+}
+
+function FilterTab({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded px-2 py-1 text-sm transition ${
+        active
+          ? "bg-zinc-900 font-medium text-white"
+          : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+      }`}
+    >
+      {label} <span className={active ? "text-zinc-400" : "text-zinc-400"}>{count}</span>
+    </button>
   );
 }

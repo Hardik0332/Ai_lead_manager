@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, X } from "lucide-react";
 
 import { STATUS_META, STATUS_ORDER, type Lead, type LeadInput } from "@/lib/types";
 
@@ -86,43 +85,42 @@ export function LeadModal({
   };
 
   const inputCls = (key: string) =>
-    `w-full rounded-lg border px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-100 focus:outline-none ${
-      errors[key] ? "border-rose-400 focus:border-rose-500" : "border-slate-200 focus:border-indigo-500"
+    `w-full rounded border px-2.5 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none ${
+      errors[key] ? "border-rose-500" : "border-zinc-300 focus:border-zinc-500"
     }`;
+  const labelCls = "mb-1 block text-xs font-medium text-zinc-600";
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-end justify-center bg-slate-900/40 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-40 flex items-end justify-center bg-zinc-900/30 sm:items-center sm:p-6"
       onClick={onClose}
     >
       <div
-        className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-6 shadow-2xl sm:rounded-2xl"
+        className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded border border-zinc-200 bg-white p-5 shadow-lg sm:rounded-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-base font-medium text-zinc-900">
             {lead ? "Edit lead" : "Add lead"}
           </h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            className="rounded px-1.5 py-0.5 text-sm text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-600"
           >
-            <X className="h-5 w-5" />
+            ✕
           </button>
         </div>
 
         <form
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          className="grid grid-cols-1 gap-3.5 sm:grid-cols-2"
           onSubmit={(e) => {
             e.preventDefault();
             void submit();
           }}
         >
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Name *
-            </label>
+            <label className={labelCls}>Name</label>
             <input
               autoFocus
               value={form.name}
@@ -133,9 +131,7 @@ export function LeadModal({
             {errors.name && <p className="mt-1 text-xs text-rose-600">{errors.name}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Company *
-            </label>
+            <label className={labelCls}>Company</label>
             <input
               value={form.company}
               onChange={(e) => set("company", e.target.value)}
@@ -145,9 +141,7 @@ export function LeadModal({
             {errors.company && <p className="mt-1 text-xs text-rose-600">{errors.company}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Email *
-            </label>
+            <label className={labelCls}>Email</label>
             <input
               type="email"
               value={form.email}
@@ -158,9 +152,7 @@ export function LeadModal({
             {errors.email && <p className="mt-1 text-xs text-rose-600">{errors.email}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Event *
-            </label>
+            <label className={labelCls}>Event</label>
             <input
               value={form.event_name}
               onChange={(e) => set("event_name", e.target.value)}
@@ -178,13 +170,11 @@ export function LeadModal({
             )}
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Follow-up status
-            </label>
+            <label className={labelCls}>Follow-up status</label>
             <select
               value={form.status}
               onChange={(e) => set("status", e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
+              className="w-full rounded border border-zinc-300 bg-white px-2.5 py-1.5 text-sm text-zinc-900 focus:border-zinc-500 focus:outline-none"
             >
               {STATUS_ORDER.map((s) => (
                 <option key={s} value={s}>
@@ -194,9 +184,7 @@ export function LeadModal({
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-600 uppercase">
-              Interaction notes
-            </label>
+            <label className={labelCls}>Interaction notes</label>
             <textarea
               value={form.notes}
               onChange={(e) => set("notes", e.target.value)}
@@ -204,26 +192,25 @@ export function LeadModal({
               placeholder="Where you met, what you discussed, agreed next steps…"
               className={`${inputCls("notes")} resize-y`}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-zinc-400">
               Good notes make the AI summary and follow-up drafts much better.
             </p>
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4 sm:col-span-2">
+          <div className="flex justify-end gap-2 border-t border-zinc-100 pt-3.5 sm:col-span-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+              className="rounded px-3 py-1.5 text-sm text-zinc-600 transition hover:bg-zinc-100"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:cursor-wait disabled:opacity-60"
+              className="rounded bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-60"
             >
-              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {lead ? "Save changes" : "Add lead"}
+              {saving ? "Saving…" : lead ? "Save changes" : "Add lead"}
             </button>
           </div>
         </form>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #ffffff;
+  --foreground: #18181b;
 }
 
 @theme inline {
@@ -17,7 +17,6 @@ body {
   color: var(--foreground);
 }
 
-/* Thin, unobtrusive scrollbars for the notes/draft areas */
 .thin-scroll {
   scrollbar-width: thin;
 }

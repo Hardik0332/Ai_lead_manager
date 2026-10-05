@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { SearchX, Sparkles, Users } from "lucide-react";
 
 import type { FollowupDraft } from "@/components/AiPanel";
 import { LeadCard } from "@/components/LeadCard";
@@ -49,7 +48,7 @@ export default function Home() {
   const filtersActive = Boolean(search || status || event);
 
   // Initial + filter-driven loads. The previous list stays visible while a
-  // refetch is in flight; only the very first load shows skeletons.
+  // refetch is in flight; only the very first load shows the loading state.
   useEffect(() => {
     let ignore = false;
     api
@@ -196,38 +195,25 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-              <Users className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="truncate font-semibold text-slate-900">LeadLoop</h1>
-              <p className="truncate text-xs text-slate-500">AI Event Lead Manager</p>
-            </div>
-          </div>
+      <header className="border-b border-zinc-200 bg-white">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+          <h1 className="text-base font-semibold tracking-tight text-zinc-900">LeadLoop</h1>
           {aiMode && (
             <span
               title={
                 aiMode === "llm"
-                  ? "AI features are calling the configured LLM"
+                  ? "AI features call the configured model (Gemini)"
                   : "No API key set — AI features use the built-in offline fallback"
               }
-              className={`inline-flex flex-none items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset ${
-                aiMode === "llm"
-                  ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
-                  : "bg-slate-100 text-slate-600 ring-slate-500/20"
-              }`}
+              className="text-xs text-zinc-400"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              {aiMode === "llm" ? "AI: LLM connected" : "AI: offline fallback"}
+              AI: {aiMode === "llm" ? "Gemini" : "offline mode"}
             </span>
           )}
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-5 px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:px-6">
         <StatsBar
           counts={counts}
           total={total}
@@ -250,13 +236,13 @@ export default function Home() {
         />
 
         {listError && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <div className="rounded border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
             {listError}
           </div>
         )}
 
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="hidden grid-cols-[minmax(170px,2fr)_minmax(130px,1.5fr)_minmax(130px,1.4fr)_auto_32px] gap-x-4 border-b border-slate-100 bg-slate-50/70 px-4 py-2.5 text-xs font-semibold tracking-wide text-slate-500 uppercase md:grid">
+        <div className="rounded border border-zinc-200 bg-white">
+          <div className="hidden grid-cols-[minmax(170px,2fr)_minmax(130px,1.5fr)_minmax(130px,1.4fr)_auto_24px] gap-x-4 border-b border-zinc-200 px-4 py-2 text-xs font-medium text-zinc-500 md:grid">
             <span>Name</span>
             <span>Company</span>
             <span>Event</span>
@@ -265,29 +251,23 @@ export default function Home() {
           </div>
 
           {loading ? (
-            <div className="space-y-3 p-4" aria-label="Loading leads">
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="h-10 animate-pulse rounded-lg bg-slate-100" />
-              ))}
-            </div>
+            <p className="px-4 py-6 text-sm text-zinc-400">Loading leads…</p>
           ) : leads.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
+            <div className="px-4 py-14 text-center">
               {filtersActive ? (
                 <>
-                  <SearchX className="h-8 w-8 text-slate-300" />
-                  <p className="font-medium text-slate-700">No leads match your filters</p>
+                  <p className="text-sm text-zinc-900">No leads match your filters</p>
                   <button
                     onClick={clearFilters}
-                    className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
+                    className="mt-1 text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-900"
                   >
                     Clear filters
                   </button>
                 </>
               ) : (
                 <>
-                  <Users className="h-8 w-8 text-slate-300" />
-                  <p className="font-medium text-slate-700">No leads yet</p>
-                  <p className="max-w-sm text-sm text-slate-500">
+                  <p className="text-sm text-zinc-900">No leads yet</p>
+                  <p className="mx-auto mt-1 max-w-sm text-sm text-zinc-500">
                     Add the first person you met at an event, then let AI summarize the
                     conversation and draft the follow-up.
                   </p>
@@ -296,7 +276,7 @@ export default function Home() {
                       setEditing(null);
                       setModalOpen(true);
                     }}
-                    className="mt-1 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
+                    className="mt-4 rounded bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-zinc-700"
                   >
                     Add your first lead
                   </button>
@@ -326,9 +306,9 @@ export default function Home() {
           )}
 
           {!loading && leads.length > 0 && (
-            <div className="border-t border-slate-100 bg-slate-50/70 px-4 py-2 text-xs text-slate-500">
+            <div className="border-t border-zinc-200 px-4 py-1.5 text-xs text-zinc-400">
               {leads.length} lead{leads.length === 1 ? "" : "s"}
-              {filtersActive && " matching filters"} · click a row to expand notes &amp; AI tools
+              {filtersActive && " matching filters"} · click a row to expand notes and AI tools
             </div>
           )}
         </div>
